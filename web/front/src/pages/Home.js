@@ -1,11 +1,11 @@
 import React from 'react'
 import PageTemplate from '@/components/common/PageTemplate';
+import DataForm from '@/components/form/DataForm';
 
 const Home = () => {
     return (
-        // <p>Hello</p>
         <PageTemplate>
-            <p>Hello</p>
+            <DataForm/>
         </PageTemplate>
     )
 };
