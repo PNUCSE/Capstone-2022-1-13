@@ -8,9 +8,7 @@ import { Typography, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
 const { Title } = Typography;
 
-// import { useFormik } from 'formik';
-
-const DataForm = () => {
+const VideoForm = () => {
     const { video } = useSelector((state) => state.forms);
 
     const dispatch = useDispatch();
@@ -44,8 +42,6 @@ const DataForm = () => {
         </li>
     ));
 
-
-    console.log(video);
     return(        
         <div>
             <Form>
@@ -64,10 +60,9 @@ const DataForm = () => {
                     <h4>Rejected files</h4>
                     <ul>{fileRejectionItems}</ul>
                 </aside>
-                <Title>Upload your Logo</Title>
             </Form>
         </div>
     )
 };
 
-export default DataForm;
+export default VideoForm;

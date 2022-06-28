@@ -1,26 +1,25 @@
 import React from 'react';
 
 import { useDispatch, useSelector } from 'react-redux';
-import { videoAdd } from '@/slices/FormSlice';
+import { logoAdd } from '@/slices/FormSlice';
 
 import { useDropzone } from 'react-dropzone'
 import { Typography, Form } from 'antd';
 import { PlusOutlined } from '@ant-design/icons'
 const { Title } = Typography;
 
-// import { useFormik } from 'formik';
-
-const DataForm = () => {
-    const { video } = useSelector((state) => state.forms);
+const LogoForm = () => {
+    const { logoImage } = useSelector((state) => state.forms);
 
     const dispatch = useDispatch();
     const onVideoDrop = ( files ) => {
-        dispatch(videoAdd({video: files[0]}))
+        dispatch(logoAdd({logoImage: files[0]}))
     }
 
     const { acceptedFiles, fileRejections, getRootProps, getInputProps } = useDropzone({
         accept: {
-            'video/mp4': [],
+            'image/png': [],
+            'image/jpeg': [],
         },
         onDrop: onVideoDrop,
         multiple: false,
@@ -44,19 +43,17 @@ const DataForm = () => {
         </li>
     ));
 
-
-    console.log(video);
     return(        
         <div>
             <Form>
-                <Title>Upload your Video</Title>
+                <Title>Upload your Logo</Title>
                 <div style={{ width: '500px', height: '500px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     {...getRootProps({ className: 'dropzone' })}
                 >
                     <input {...getInputProps()} />
                     <PlusOutlined style={{ fontSize: '3rem' }} />
                     {/* <p>Drag 'n' drop some files here, or click to select files</p>
-                    <em>(Only *.mp4 images will be accepted)</em> */}
+                    <em>(Only *.png and *.jpg images will be accepted)</em> */}
                 </div>
                 <aside>
                     <h4>Accepted files</h4>
@@ -64,10 +61,9 @@ const DataForm = () => {
                     <h4>Rejected files</h4>
                     <ul>{fileRejectionItems}</ul>
                 </aside>
-                <Title>Upload your Logo</Title>
             </Form>
         </div>
     )
 };
 
-export default DataForm;
+export default LogoForm;
