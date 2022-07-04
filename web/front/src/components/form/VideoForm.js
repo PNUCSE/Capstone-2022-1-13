@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { videoAdd } from '@/slices/FormSlice';
 
 import { useDropzone } from 'react-dropzone'
@@ -9,8 +9,6 @@ import { PlusOutlined } from '@ant-design/icons'
 const { Title } = Typography;
 
 const VideoForm = () => {
-    const { video } = useSelector((state) => state.forms);
-
     const dispatch = useDispatch();
     const onVideoDrop = ( files ) => {
         dispatch(videoAdd({video: files[0]}))

@@ -5,9 +5,8 @@ export const submit = createAsyncThunk(
     "forms/submit",
     async( {video, logoImage}, thunkAPI) => {
         try {
-            const response = await formAPI.postSubmit(video, logoImage);
-            console.log(response)
-            return response
+            const data = await formAPI.postSubmit(video, logoImage);
+            return data
         } catch (error) {
             console.error(error);
             return thunkAPI.rejectWithValue(error.response.data);
@@ -15,7 +14,7 @@ export const submit = createAsyncThunk(
     }
 )
 
-const initialState = { video: null, logoImage: null }
+const initialState = { video: null, logoImage: null, isSubmitFinish: true, error: null }
 
 const formSlice = createSlice({
     name: 'forms',
@@ -29,11 +28,16 @@ const formSlice = createSlice({
         }
     },
     extraReducers: {
-        [submit.rejected]: (state,action) => {
-
+        [submit.pending]: (state, action) => {
+            state.isSubmitFinish = false;
+        },
+        [submit.rejected]: (state, action) => {
+            state.isSubmitFinish = true;
+            state.error = action.error
         },
         [submit.fulfilled]: (state, action) => {
-            
+            state.isSubmitFinish = true;
+            state.error = null;
         }
     }
 });
