@@ -18,9 +18,12 @@ def logo(request):
         'image': request.data['image'],
     }
 
-    logoSerializer = LogoSerializer(newImage)
-    logoSerializer.save()
-    
+    logoSerializer = LogoSerializer(data=newImage)
+    if logoSerializer.is_valid():
+        logoSerializer.save()
+    else:
+        return Response(logoSerializer.errors)
+
     return Response(logoSerializer.data)
 
 # logo/<int:pk>/

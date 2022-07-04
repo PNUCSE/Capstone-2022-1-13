@@ -47,7 +47,7 @@ const LogoForm = () => {
         <div>
             <Form>
                 <Title>Upload your Logo</Title>
-                <div style={{ width: '500px', height: '500px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
+                <div style={{ width: '200px', height: '200px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
                     {...getRootProps({ className: 'dropzone' })}
                 >
                     <input {...getInputProps()} />
