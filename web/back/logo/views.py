@@ -21,10 +21,11 @@ def logo(request):
     logoSerializer = LogoSerializer(data=newImage)
     if logoSerializer.is_valid():
         logoSerializer.save()
+        print(logoSerializer.data)
+        return Response(logoSerializer.data)
     else:
+        print("not valid")
         return Response(logoSerializer.errors)
-
-    return Response(logoSerializer.data)
 
 # logo/<int:pk>/
 @api_view(['GET'])

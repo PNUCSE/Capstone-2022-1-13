@@ -6,7 +6,7 @@ export const submit = createAsyncThunk(
     async( {video, logoImage}, thunkAPI) => {
         try {
             const response = await formAPI.postSubmit(video, logoImage);
-            console.log(response.data)
+            console.log(response)
             return response
         } catch (error) {
             console.error(error);
