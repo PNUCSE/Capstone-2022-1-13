@@ -22,7 +22,18 @@ def logo(request):
     if logoSerializer.is_valid():
         logoSerializer.save()
         print(logoSerializer.data)
-        return Response(logoSerializer.data)
+
+        sample_data = [
+            {
+                "start": "00:00:01",
+                "end": "00:00:03"
+            },
+            {
+                "start": "00:00:05",
+                "end": "00:00:08"
+            }
+        ]
+        return Response(sample_data)
     else:
         print("not valid")
         return Response(logoSerializer.errors)

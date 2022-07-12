@@ -1,15 +1,24 @@
 import React from 'react';
+import styles from './ShowVideo.module.scss'
+import classNames from 'classnames/bind';
 
 import { useSelector } from 'react-redux';
 
 const ShowVideo = () => {
+
+    const cx = classNames.bind(styles);
     const { video } = useSelector((state) => state.forms);
-    console.log(video)
+    const { time } = useSelector((state) => state.videos);
+    console.log(time)
 
     return (
-        <video controls>
-            <source src={video}></source>
-        </video>
+        <div className={cx('Container')}>
+            <video controls className={cx('Video')}>
+                <source src={URL.createObjectURL(video)}></source>
+            </video>
+            <p>{time}</p>
+        </div>
+        
     )
 }
 
