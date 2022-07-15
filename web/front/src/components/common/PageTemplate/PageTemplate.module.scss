@@ -1,8 +1,10 @@
 @import "@/styles/utils";
 
 .page-template {
+    height: 100vh;
+
     main {
-        height: calc(100vh - 105px);
+        min-height: calc(100vh - 100px);
         display: flex;
         justify-content: center;
     }

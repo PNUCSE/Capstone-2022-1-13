@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import TimeStampButton from './TimeStampButton';
+import TimeStampButton from './TimeStampButton/TimeStampButton';
 
 import classNames from 'classnames/bind';
 import styles from './TimeStampContainer.module.scss'

@@ -25,12 +25,12 @@ def logo(request):
 
         sample_data = [
             {
-                "start": "00:00:01",
-                "end": "00:00:03"
+                "start": 1,
+                "end": 3
             },
             {
-                "start": "00:00:05",
-                "end": "00:00:08"
+                "start": 5,
+                "end": 8
             }
         ]
         return Response(sample_data)

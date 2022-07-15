@@ -10,8 +10,8 @@ const TimeStampButton = ({item}) => {
     const dispatch = useDispatch();
 
     const onTimeMove = () => {
-        const time = item.start
-        dispatch(timeMove({time}))
+        const time = item.start;
+        dispatch(timeMove({time}));
     }
 
     return (
