@@ -6,7 +6,7 @@ import { ShowVideo } from '@/components/result';
 
 const Result = () => {
     return (
-        <PageTemplate>
+        <PageTemplate route={"Result"}>
             <ShowVideo/>
             <TimeStampContainer/>
         </PageTemplate>

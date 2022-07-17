@@ -1,13 +1,14 @@
 import React from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
-import { Home, Result } from '@/pages'
+import PageList from './PageList';
 
 const App = () => {
     return (
         <BrowserRouter>
             <Routes>
-                <Route path="/" element={<Home />}/>
-                <Route path="result" element={<Result />}/>
+                {PageList.map(({ path, Component }, index) => (
+                    <Route path={path} key={index} element={Component} />
+                ))}
             </Routes>
         </BrowserRouter>
     )

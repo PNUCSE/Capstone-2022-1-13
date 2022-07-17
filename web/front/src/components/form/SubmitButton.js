@@ -6,8 +6,11 @@ import { submit } from '@/slices/FormSlice'
 
 import { useNavigate } from 'react-router-dom';
 
-const SubmitButton = () => {
+import classNames from 'classnames/bind';
+import styles from './SubmitButton.module.scss'
 
+const SubmitButton = () => {
+    const cx = classNames.bind(styles);
     const { video, logoImage, isSubmitFinish, error } = useSelector((state) => state.forms);
 
     const dispatch = useDispatch();
@@ -24,11 +27,11 @@ const SubmitButton = () => {
     }
 
     return(
-        <div>
-            <Button type="primary" onClick={onSubmit}>Submit</Button>
+        <div className={cx('ButtonContainer')}>
+            <Button type="primary" size={"large"} onClick={onSubmit}>Submit</Button>
             {
                 isSubmitFinish ? 
-                    <p>Success</p> : 
+                    <></> : 
                     <Spin size="large"/>
             }
         </div>

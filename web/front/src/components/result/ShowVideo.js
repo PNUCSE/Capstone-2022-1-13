@@ -10,19 +10,13 @@ const ShowVideo = () => {
     const dispatch = useDispatch();
 
     const { video } = useSelector((state) => state.forms);
-    const { time } = useSelector((state) => state.videos);
-    const videoRef = useRef(null);
+    const { time, changeToggle } = useSelector((state) => state.videos);
+    let videoRef = useRef(null);
 
     useEffect(() => {
         const videoDOM = videoRef.current;
         videoDOM.currentTime = time;
-    }, [time])
-
-    useEffect(() => {
-        const videoDOM = videoRef.current;
-        const time = videoDOM.currentTime;
-        dispatch(timeMove({time}));
-    }, [videoRef])
+    }, [changeToggle])
     
     return (
         <div className={cx('Container')}>

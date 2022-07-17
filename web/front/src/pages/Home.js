@@ -5,7 +5,7 @@ import { VideoForm, LogoForm, SubmitButton } from '@/components/form';
 const Home = () => {
     return (
         <PageTemplate>
-            <div style={{'flexDirection': 'column'}}>
+            <div>
                 <VideoForm/>
                 <LogoForm/>
                 <SubmitButton/>

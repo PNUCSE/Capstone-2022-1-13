@@ -1,7 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
-    time: null
+    time: null,
+    changeToggle: true
 }
 
 const videoSlice = createSlice({
@@ -10,6 +11,7 @@ const videoSlice = createSlice({
     reducers: {
         timeMove: (state, action) => {
             state.time = action.payload.time;
+            state.changeToggle = !state.changeToggle;
         }
     }
 });

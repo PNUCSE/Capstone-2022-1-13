@@ -6,10 +6,10 @@ import Header from './Header';
 
 const cx = classNames.bind(styles);
 
-const PageTemplate = ({children}) => {
+const PageTemplate = ({route, children}) => {
     return (
         <div className={cx('page-template')}>
-            <Header />
+            <Header route={route} />
             <main>
                 {children}
             </main>
