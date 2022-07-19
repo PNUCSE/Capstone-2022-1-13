@@ -16,6 +16,7 @@ from .models import Logo
 def logo(request):
     newImage = {
         'image': request.data['image'],
+        'video': request.data['video']
     }
 
     logoSerializer = LogoSerializer(data=newImage)

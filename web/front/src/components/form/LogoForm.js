@@ -27,7 +27,7 @@ const LogoForm = () => {
     return(        
         <div>
             <div className={cx('FormContainer')}>
-                <div className={cx('Title')}>Upload your Video</div>
+                <div className={cx('Title')}>Upload Logo Image you want to detect</div>
                 <div className={cx('DropZoneImage')}
                     style={
                         !!acceptedFiles[0] ?

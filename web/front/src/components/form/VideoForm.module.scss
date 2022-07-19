@@ -15,6 +15,10 @@
 
     .DropZoneVideo {
         background: #A7A7A7;
+        background-size: cover;
+        background-position: center;
+
+        border: 1px solid black;
         width: 640px;
         height: 360px;
         margin: 10px 0px;
