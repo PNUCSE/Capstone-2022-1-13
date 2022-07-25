@@ -3,7 +3,7 @@ import shutil
 import random
 from sklearn.model_selection import train_test_split
 
-dir_path = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-A'
+dir_path = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-D'
 dir_names = os.listdir(dir_path)
 dir_names
 
@@ -14,10 +14,10 @@ labelfile_path = os.path.join(dir_path,dir_names[1])
 #LogoDet-3K split
 file_names = os.listdir(imagefile_path)
 
-randomFileList = random.sample(file_names, 100)
+randomFileList = random.sample(file_names, 14000)
 for file in randomFileList:
     dstsource = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K'
-    dstsource = os.path.join(dstsource, 'Det-A')
+    dstsource = os.path.join(dstsource, 'Det-D')
 
     #image
     src = os.path.join(imagefile_path,file)
@@ -50,7 +50,7 @@ for label in label_train:
     dst = os.path.join(labelfile_path, "train")
     dst = os.path.join(dst,label)
     os.rename(src,dst)
-for label in label_train:
+for label in label_test:
     src = os.path.join(labelfile_path, label)
     dst = os.path.join(labelfile_path, "val")
     dst = os.path.join(dst,label)
