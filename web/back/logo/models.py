@@ -7,3 +7,11 @@ class Logo(models.Model) :
 
     def __str__(self):
         return "{0}".format(self.image)
+
+class LogoResult(models.Model):
+    logo = models.ForeignKey(Logo, on_delete=models.CASCADE)
+    result = models.FileField(upload_to = 'results/', null = True)
+
+    def __str__(self):
+        return "{0}".format(self.logo)
+    

@@ -10,6 +10,10 @@ from django.shortcuts import get_object_or_404
 from .serializers import LogoSerializer
 from .models import Logo
 
+# import sys
+# sys.path.append("/usr/local/bin/logoFinder/web/back/yolov5")
+from logo.services.detect import DetectLogo
+
 # logo/
 @api_view(['POST'])
 @parser_classes([MultiPartParser])
@@ -21,8 +25,10 @@ def logo(request):
 
     logoSerializer = LogoSerializer(data=newImage)
     if logoSerializer.is_valid():
-        logoSerializer.save()
-        print(logoSerializer.data)
+        logo = logoSerializer.save()
+        
+        detectLogo = DetectLogo(imgSz=(640, 640), conf=0.25, logo=logo)
+        detectLogo.find_logo()
 
         sample_data = [
             {
