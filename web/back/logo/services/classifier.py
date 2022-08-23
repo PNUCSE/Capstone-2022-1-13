@@ -14,6 +14,7 @@ class SecondClassifier:
         logo = cv2.resize(logo, (224, 224))
         # logo = logo[:, :, ::-1].transpose(2, 0, 1)
         logo = logo[:, :, ::-1]
+        self.logim = logo
         self.logo = np.ascontiguousarray(logo, dtype=np.float32)
 
         # need weights
@@ -126,6 +127,16 @@ class SecondClassifier:
 
                     im = cv2.resize(cutout, (224, 224))
                     im = im[:, :, ::-1]
+                    
+                    ## For Debugging
+                    cv2.imshow('logo', self.logim)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+
+                    cv2.imshow('logo', im)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
+
                     im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                     im_vec = self.get_vector(im)
 
