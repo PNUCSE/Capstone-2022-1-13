@@ -15,6 +15,10 @@ import torch.backends.cudnn as cudnn
 from logo.models import Logo, LogoResult
 
 import os
+import datetime
+
+# from logo.services.classifier import similarity_classifier
+from logo.services.classifier import SecondClassifier
 
 class DetectLogo:
     def __init__(self, imgSz, conf, logo):
@@ -25,20 +29,25 @@ class DetectLogo:
 
     def find_logo(self):
         source = self.logo.video.path
-        img = self.logo.image.path
         weights = os.path.join(self.base_dir, 'logo/services/best.pt')
 
         logoResult = LogoResult(logo = self.logo)
         logoResult.save()
 
-        save_dir = increment_path(Path(os.path.join(self.base_dir, 'result')) / 'exp', exist_ok=False)  # increment run
-        save_dir.mkdir(parents=True, exist_ok=True)  # make dir
+        logo_img = self.logo.image.path
+        logo_img = cv2.imread(logo_img, cv2.IMREAD_COLOR)
+        # logo_img = cv2.cvtColor(logo_img, cv2.COLOR_BGR2RGB)
+        classifier = SecondClassifier(logo_img)
+
+        # save_dir = increment_path(Path(os.path.join(self.base_dir, 'logo/result')) / 'exp', exist_ok=False)  # increment run
+        # save_dir.mkdir(parents=True, exist_ok=True)  # make dir
         # save_dir = os.path.join(self.base_dir, 'results')
+        save_dir = Path(os.path.join(self.base_dir, 'logo/result'))
+        save_dir.mkdir(parents=True, exist_ok=True)
 
         device = select_device('')
         # data = self.base_dir + '/yolov5/data/coco128.yaml' # 뒤에 바꿔야됨
         data = os.path.join(self.base_dir, 'yolov5/data/coco128.yaml')
-        print(data)
         model = DetectMultiBackend(weights, device=device, dnn=False, data=data, fp16=False)
         stride, names, pt = model.stride, model.names, model.pt
         imgsz = check_img_size(self.imgsz, s=stride)
@@ -49,6 +58,11 @@ class DetectLogo:
 
         model.warmup(imgsz=(1 if pt else bs, 3, *imgsz))  # warmup
         seen, windows, dt = 0, [], [0.0, 0.0, 0.0]
+
+        preSeen = 0
+        nowTime = datetime.datetime.min
+        seen_result = []
+        # playTime = datetime.date
         
         for path, im, im0s, vid_cap, s in datasets:
             t1 = time_sync()
@@ -76,10 +90,14 @@ class DetectLogo:
 
             # need 2nd stage
             # something need
+            pred = classifier.calculate_similarity(pred, im, im0s)
+            # pred = similarity_classifier(pred, im, im0s, logo_img)
 
             # Process predictions
+            logoSeen = 0
             for i, det in enumerate(pred):  # per image
                 seen += 1
+                logoSeen = len(det)
                 p, im0, frame = path, im0s.copy(), getattr(datasets, 'frame', 0)
 
                 p = Path(p)  # to Path
@@ -100,13 +118,6 @@ class DetectLogo:
 
                     # Write results
                     for *xyxy, conf, cls in reversed(det):
-                        # if save_txt:  # Write to file
-                        #     xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()  # normalized xywh
-                        #     line = (cls, *xywh, conf) if save_conf else (cls, *xywh)  # label format
-                        #     with open(f'{txt_path}.txt', 'a') as f:
-                        #         f.write(('%g ' * len(line)).rstrip() % line + '\n')
-
-                        # if save_img or save_crop or view_img:  # Add bbox to image
                         if True:
                             c = int(cls)  # integer class
                             label = None if False else (names[c] if False else f'{names[c]} {conf:.2f}')
@@ -114,18 +125,6 @@ class DetectLogo:
                         # if save_crop:
                         #     save_one_box(xyxy, imc, file=save_dir / 'crops' / names[c] / f'{p.stem}.jpg', BGR=True)
 
-                # Stream results
-                # im0 = annotator.result()
-                # if view_img:
-                #     if platform.system() == 'Linux' and p not in windows:
-                #         windows.append(p)
-                #         cv2.namedWindow(str(p), cv2.WINDOW_NORMAL | cv2.WINDOW_KEEPRATIO)  # allow window resize (Linux)
-                #         cv2.resizeWindow(str(p), im0.shape[1], im0.shape[0])
-                #     cv2.imshow(str(p), im0)
-                #     cv2.waitKey(1)  # 1 millisecond
-
-                # Save results (image with detections)
-                # if save_img:
                 if True:
                     if datasets.mode == 'image':
                         cv2.imwrite(save_path, im0)
@@ -141,11 +140,30 @@ class DetectLogo:
                             else:  # stream
                                 fps, w, h = 30, im0.shape[1], im0.shape[0]
                             save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
-                            vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'avc1'), fps, (w, h))
+                            vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
                         vid_writer[i].write(im0)
 
             # Print time (inference-only)
             LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
+
+            nowTime = nowTime + datetime.timedelta(milliseconds=33)
+            if logoSeen != 0:
+                if preSeen == 0:
+                    seenData = {
+                        "start": nowTime - datetime.datetime.min
+                    }
+                    print("logo start at ", nowTime - datetime.datetime.min)
+                else :
+                    pass
+            else :
+                if preSeen == 0:
+                    pass
+                else :
+                    seenData["end"] = nowTime - datetime.datetime.min
+                    print("logo end at ", nowTime - datetime.datetime.min)
+                    seen_result.append(seenData)
+
+            preSeen = logoSeen
 
         # Print results
         t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
@@ -159,3 +177,4 @@ class DetectLogo:
             strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
         # os.system(f"ffmpeg -i {os.path.join(save_dir, os.path.basename(source))} -vcodec libx264 {os.path.join(save_dir, 'result.mp4')}")
+        return seen_result

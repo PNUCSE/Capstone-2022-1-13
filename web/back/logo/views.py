@@ -28,18 +28,20 @@ def logo(request):
         logo = logoSerializer.save()
         
         detectLogo = DetectLogo(imgSz=(640, 640), conf=0.25, logo=logo)
-        detectLogo.find_logo()
+        sample_data = detectLogo.find_logo()
 
-        sample_data = [
-            {
-                "start": 1,
-                "end": 3
-            },
-            {
-                "start": 5,
-                "end": 8
-            }
-        ]
+        print(sample_data)
+
+        # sample_data = [
+        #     {
+        #         "start": 1,
+        #         "end": 3
+        #     },
+        #     {
+        #         "start": 5,
+        #         "end": 8
+        #     }
+        # ]
         return Response(sample_data)
     else:
         print("not valid")
