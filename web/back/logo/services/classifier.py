@@ -58,6 +58,7 @@ class SecondClassifier:
             boxes[:, [0, 2]] = boxes[:, [0, 2]].clip(0, shape[1])  # x1, x2
             boxes[:, [1, 3]] = boxes[:, [1, 3]].clip(0, shape[0])  # y1, y2
 
+    # self.scale_coords(img.shape[2:], new_d[:, :4], im0[i].shape)
     def scale_coords(self, img1_shape, coords, img0_shape, ratio_pad=None):
         # Rescale coords (xyxy) from img1_shape to img0_shape
         if ratio_pad is None:  # calculate from img0_shape
@@ -111,8 +112,8 @@ class SecondClassifier:
 
                 # Reshape and pad cutouts
                 b = self.xyxy2xywh(new_d[:, :4])  # boxes
-                b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-                b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
+                # b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
+                # b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
                 new_d[:, :4] = self.xywh2xyxy(b).long()
 
                 # Rescale boxes from img_size to im0 size
@@ -129,13 +130,13 @@ class SecondClassifier:
                     im = im[:, :, ::-1]
                     
                     ## For Debugging
-                    cv2.imshow('logo', self.logim)
-                    cv2.waitKey(0)
-                    cv2.destroyAllWindows()
+                    # cv2.imshow('logo', self.logim)
+                    # cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
 
-                    cv2.imshow('logo', im)
-                    cv2.waitKey(0)
-                    cv2.destroyAllWindows()
+                    # cv2.imshow('logo', im)
+                    # cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
 
                     im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                     im_vec = self.get_vector(im)
@@ -143,15 +144,13 @@ class SecondClassifier:
                     cos_sim = self.cos(self.logo_vec, im_vec) 
                     # sims.append(cos_sim[0,0,0])
                     
-                    print(cos_sim[0,0,0])
+                    # print(cos_sim[0,0,0])
                     if thres > cos_sim[0, 0, 0]:
                         sims.append(a_i)
                         after -= 1
 
                 d = np.delete(d, sims, 0)
-                new_x.append(d)
-                
+
+            new_x.append(d)
 
         return new_x
-
-            

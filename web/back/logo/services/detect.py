@@ -90,7 +90,7 @@ class DetectLogo:
 
             # need 2nd stage
             # something need
-            pred = classifier.calculate_similarity(pred, im, im0s)
+            pred = classifier.calculate_similarity(pred, im, im0s, thres=0.97)
             # pred = similarity_classifier(pred, im, im0s, logo_img)
 
             # Process predictions
@@ -144,7 +144,7 @@ class DetectLogo:
                         vid_writer[i].write(im0)
 
             # Print time (inference-only)
-            LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
+            # LOGGER.info(f'{s}Done. ({t3 - t2:.3f}s)')
 
             nowTime = nowTime + datetime.timedelta(milliseconds=33)
             if logoSeen != 0:
@@ -152,7 +152,7 @@ class DetectLogo:
                     seenData = {
                         "start": nowTime - datetime.datetime.min
                     }
-                    print("logo start at ", nowTime - datetime.datetime.min)
+                    # print("logo start at ", nowTime - datetime.datetime.min)
                 else :
                     pass
             else :
@@ -160,7 +160,7 @@ class DetectLogo:
                     pass
                 else :
                     seenData["end"] = nowTime - datetime.datetime.min
-                    print("logo end at ", nowTime - datetime.datetime.min)
+                    # print("logo end at ", nowTime - datetime.datetime.min)
                     seen_result.append(seenData)
 
             preSeen = logoSeen
