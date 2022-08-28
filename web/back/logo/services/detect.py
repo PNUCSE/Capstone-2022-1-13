@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from django.conf import settings
+from django.core.files import File
 
 from yolov5.utils.general import (LOGGER, check_file, check_img_size, check_imshow, check_requirements, colorstr, cv2,
                            increment_path, non_max_suppression, print_args, scale_coords, strip_optimizer, xyxy2xywh)
@@ -42,7 +43,7 @@ class DetectLogo:
         # save_dir = increment_path(Path(os.path.join(self.base_dir, 'logo/result')) / 'exp', exist_ok=False)  # increment run
         # save_dir.mkdir(parents=True, exist_ok=True)  # make dir
         # save_dir = os.path.join(self.base_dir, 'results')
-        save_dir = Path(os.path.join(self.base_dir, 'logo/result'))
+        save_dir = Path(os.path.join(self.base_dir, 'files/results'))
         save_dir.mkdir(parents=True, exist_ok=True)
 
         device = select_device('')
@@ -172,6 +173,9 @@ class DetectLogo:
         if False or True:
             s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if False else ''
             LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
+
+            logoResult.result.name = os.path.join(save_dir, os.path.basename(source))
+            logoResult.save()
         # if update:
         if False:
             strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
