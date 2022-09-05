@@ -76,8 +76,8 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:3000",
-    "http://localhost:3000"
+    "http://127.0.0.1:8010",
+    "http://localhost:8010"
 ]
 
 ROOT_URLCONF = 'mysite.urls'

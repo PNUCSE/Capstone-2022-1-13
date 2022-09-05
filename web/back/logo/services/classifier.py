@@ -1,3 +1,4 @@
+from collections import defaultdict
 import numpy as np
 import torch
 import cv2
@@ -28,6 +29,8 @@ class SecondClassifier:
 
         self.logo_vec = self.get_vector(self.logo)
         self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+
+        self.stat = defaultdict(int)
 
     def xyxy2xywh(self, x):
         # Convert nx4 boxes from [x1, y1, x2, y2] to [x, y, w, h] where xy1=top-left, xy2=bottom-right
@@ -129,14 +132,14 @@ class SecondClassifier:
                     im = cv2.resize(cutout, (224, 224))
                     im = im[:, :, ::-1]
                     
-                    ## For Debugging
+                    # For Debugging
                     # cv2.imshow('logo', self.logim)
                     # cv2.waitKey(0)
                     # cv2.destroyAllWindows()
 
-                    # cv2.imshow('logo', im)
-                    # cv2.waitKey(0)
-                    # cv2.destroyAllWindows()
+                    cv2.imshow('logo', im)
+                    cv2.waitKey(0)
+                    cv2.destroyAllWindows()
 
                     im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                     im_vec = self.get_vector(im)
@@ -144,7 +147,11 @@ class SecondClassifier:
                     cos_sim = self.cos(self.logo_vec, im_vec) 
                     # sims.append(cos_sim[0,0,0])
                     
-                    # print(cos_sim[0,0,0])
+                    #print(cos_sim[0,0,0])
+                    str_sim = str(cos_sim[0,0,0])
+                    self.stat[str_sim[7:11]] += 1
+                    # print(self.stat[str_sim[7:11]])
+
                     if thres > cos_sim[0, 0, 0]:
                         sims.append(a_i)
                         after -= 1
@@ -153,4 +160,4 @@ class SecondClassifier:
 
             new_x.append(d)
 
-        return new_x
+        return new_x, self.stat

@@ -91,7 +91,7 @@ class DetectLogo:
 
             # need 2nd stage
             # something need
-            pred = classifier.calculate_similarity(pred, im, im0s, thres=0.97)
+            pred, stat = classifier.calculate_similarity(pred, im, im0s, thres=0.97)
             # pred = similarity_classifier(pred, im, im0s, logo_img)
 
             # Process predictions
@@ -171,6 +171,11 @@ class DetectLogo:
         LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
         # if save_txt or save_img:
         if False or True:
+            LOGGER.info(f'\nTotal Similiarty')
+            LOGGER.info(f'\nstat: {stat}')
+            sorted_stat = sorted(stat)
+            LOGGER.info(f'\n{sorted_stat}')
+
             s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if False else ''
             LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
 
