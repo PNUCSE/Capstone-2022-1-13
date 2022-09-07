@@ -91,7 +91,7 @@ class DetectLogo:
 
             # need 2nd stage
             # something need
-            pred, stat = classifier.calculate_similarity(pred, im, im0s, thres=0.99)
+            pred, stat = classifier.calculate_similarity(pred, im, im0s, thres=0.93)
             # pred = similarity_classifier(pred, im, im0s, logo_img)
 
             # Process predictions

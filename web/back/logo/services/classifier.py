@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import cv2
 
+from torch import cdist
 import torch.nn as nn
 import torchvision.models as models
 from torchvision.models import ResNet18_Weights
@@ -27,8 +28,9 @@ class SecondClassifier:
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         self.to_tensor = transforms.ToTensor()
 
-        self.logo_vec = self.get_vector(self.logo)
-        self.cos = nn.CosineSimilarity(dim=1, eps=1e-6)
+        self.logo_vec = self.get_vector(self.logo).reshape(512)
+        self.cos = nn.CosineSimilarity(dim=0, eps=1e-6)
+        # self.euclid = nn.PairwiseDistance(p=2)
 
         self.stat = defaultdict(int)
 
@@ -115,8 +117,6 @@ class SecondClassifier:
 
                 # Reshape and pad cutouts
                 b = self.xyxy2xywh(new_d[:, :4])  # boxes
-                # b[:, 2:] = b[:, 2:].max(1)[0].unsqueeze(1)  # rectangle to square
-                # b[:, 2:] = b[:, 2:] * 1.3 + 30  # pad
                 new_d[:, :4] = self.xywh2xyxy(b).long()
 
                 # Rescale boxes from img_size to im0 size
@@ -132,7 +132,7 @@ class SecondClassifier:
                     im = cv2.resize(cutout, (224, 224))
                     im = im[:, :, ::-1]
                     
-                    # For Debugging
+                    ### For Debugging
                     # cv2.imshow('logo', self.logim)
                     # cv2.waitKey(0)
                     # cv2.destroyAllWindows()
@@ -140,21 +140,26 @@ class SecondClassifier:
                     # cv2.imshow('logo', im)
                     # cv2.waitKey(0)
                     # cv2.destroyAllWindows()
+                    ###
 
                     im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
-                    im_vec = self.get_vector(im)
+                    im_vec = self.get_vector(im).reshape(512)
 
-                    cos_sim = self.cos(self.logo_vec, im_vec) 
-                    # sims.append(cos_sim[0,0,0])
-                    
-                    #print(cos_sim[0,0,0])
-                    str_sim = str(cos_sim[0,0,0])
+                    # size of vector tensor's size : [512]
+                    # cosine similiarity
+                    sim = self.cos(self.logo_vec, im_vec) 
+
+                    # euclid distance
+                    # sim = self.euclid(self.logo_vec, im_vec) 
+
+                    # print("sim", sim)
+                    str_sim = str(sim)
                     self.stat[str_sim[7:11]] += 1
-                    # print(self.stat[str_sim[7:11]])
 
-                    if thres > cos_sim[0, 0, 0]:
+                    if thres > sim:
                         sims.append(a_i)
                         after -= 1
+                    # d[a_i, 4] = sim
 
                 d = np.delete(d, sims, 0)
 
