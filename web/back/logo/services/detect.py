@@ -91,7 +91,7 @@ class DetectLogo:
 
             # need 2nd stage
             # something need
-            pred, stat = classifier.calculate_similarity(pred, im, im0s, thres=0.97)
+            pred, stat = classifier.calculate_similarity(pred, im, im0s, thres=0.99)
             # pred = similarity_classifier(pred, im, im0s, logo_img)
 
             # Process predictions
@@ -169,12 +169,33 @@ class DetectLogo:
         # Print results
         t = tuple(x / seen * 1E3 for x in dt)  # speeds per image
         LOGGER.info(f'Speed: %.1fms pre-process, %.1fms inference, %.1fms NMS per image at shape {(1, 3, *imgsz)}' % t)
+
+        mani_seen_result = []
+        preElem = None
+        seenData = None
+
+        for i, elem in enumerate(seen_result):
+            if preElem is None:
+                seenData = elem
+            else:
+                if preElem["end"].seconds <= elem["start"].seconds <= preElem["end"].seconds + 1:
+                    seenData["end"] = elem["end"]
+                else:
+                    mani_seen_result.append(seenData)
+                    seenData = elem
+
+            preElem = elem
+        mani_seen_result.append(seenData)
+
         # if save_txt or save_img:
         if False or True:
             LOGGER.info(f'\nTotal Similiarty')
-            LOGGER.info(f'\nstat: {stat}')
-            sorted_stat = sorted(stat)
+            # LOGGER.info(f'\nstat: {stat}')
+            sorted_stat = sorted(stat.items())
             LOGGER.info(f'\n{sorted_stat}')
+
+            LOGGER.info(f'\nTotal Result time Stamp')
+            LOGGER.info(f'\n{mani_seen_result}')
 
             s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if False else ''
             LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
@@ -186,4 +207,4 @@ class DetectLogo:
             strip_optimizer(weights[0])  # update model (to fix SourceChangeWarning)
 
         # os.system(f"ffmpeg -i {os.path.join(save_dir, os.path.basename(source))} -vcodec libx264 {os.path.join(save_dir, 'result.mp4')}")
-        return seen_result
+        return mani_seen_result

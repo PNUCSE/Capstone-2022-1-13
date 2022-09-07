@@ -137,9 +137,9 @@ class SecondClassifier:
                     # cv2.waitKey(0)
                     # cv2.destroyAllWindows()
 
-                    cv2.imshow('logo', im)
-                    cv2.waitKey(0)
-                    cv2.destroyAllWindows()
+                    # cv2.imshow('logo', im)
+                    # cv2.waitKey(0)
+                    # cv2.destroyAllWindows()
 
                     im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
                     im_vec = self.get_vector(im)
