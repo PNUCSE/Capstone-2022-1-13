@@ -2,7 +2,7 @@ from re import L
 import xml.etree.ElementTree as ET
 import os
 #C:/Users/me/Downloads/archive (1)/LogoDet-3K/Clothes/2xist/
-file_path = 'C:/Users/me/Desktop/GA2022/LogoDet-3K/Det-S_M_L_E/labels'
+file_path = 'C:/Users/me/Desktop/GA2022/LogoDet-3K/processing/Transportation/labels'
 file_names = os.listdir(file_path)
 file_names 
 

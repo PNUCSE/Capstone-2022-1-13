@@ -1,7 +1,7 @@
 import os
 import shutil
 
-dir_path = 'C:\\Users\\me\\Downloads\\LogoDet-3K\\Electronic'#여기 경로 넣으면됨
+dir_path = 'C:\\Users\\me\\Downloads\\LogoDet-3K\\Clothes'#여기 경로 넣으면됨
 subdir_names = os.listdir(dir_path)
 subdir_names
 """
@@ -10,7 +10,7 @@ for subdir_name in subdir_names:
     dst = os.path.join("C:\\Users\\me\\Downloads\\archive (1)\\LogoDet-3K\\labels",subdir_name)
     os.rename(src,dst)
 """
-i=13584
+i=127389
 
 for subdir_name in subdir_names:
     file_path = os.path.join(dir_path,subdir_name)
@@ -18,15 +18,16 @@ for subdir_name in subdir_names:
     for file_name in file_names:
         src = os.path.join(file_path,file_name)
         if(file_name[-3:]=="jpg"):
-            dst = os.path.join("C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-S_M_L_E","images")
+            dst = os.path.join("C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\processing\\Clothes","images")
             name = 'logo' + str(i) + ".jpg"
             dst = os.path.join(dst, name)
             #os.rename(src, dst)
             shutil.copy(src,dst)
         elif(file_name[-3:]=="xml"):
-            dst = os.path.join("C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-S_M_L_E", "labels")
+            dst = os.path.join("C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\processing\\Clothes", "labels")
             name = 'logo' + str(i) + '.xml'
             dst = os.path.join(dst, name)
-            os.rename(src, dst)
+            #os.rename(src, dst)
+            shutil.copy(src,dst)
             i=i+1
 print(i)

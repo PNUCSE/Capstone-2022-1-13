@@ -7,7 +7,7 @@ import numpy as np
 import cv2
 
 
-dir_path = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-S_M_L_E'
+dir_path = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K\\Det-normalizeS_M_L_E_T'
 dir_names = os.listdir(dir_path)
 dir_names
 
@@ -46,15 +46,14 @@ for image in os.listdir(imagefile_path):
     os.remove(image_path)
     cutout.save(image_path)
 """
-
 """
 #LogoDet-3K split
 file_names = os.listdir(imagefile_path)
 
-randomFileList = random.sample(file_names, 14000)
+randomFileList = random.sample(file_names, 3000)
 for file in randomFileList:
     dstsource = 'C:\\Users\\me\\Desktop\\GA2022\\LogoDet-3K'
-    dstsource = os.path.join(dstsource, 'Det-D')
+    dstsource = os.path.join(dstsource, 'Det-normalizeS_M_L_E_T')
 
     #image
     src = os.path.join(imagefile_path,file)
@@ -68,6 +67,7 @@ for file in randomFileList:
     shutil.copy(src, dst)
 """
 
+"""
 #train/val split
 image_file_names = [file_name for file_name in os.listdir(imagefile_path) if os.path.isfile(os.path.join(imagefile_path, file_name))]
 label_file_names= [file_name for file_name in os.listdir(labelfile_path) if os.path.isfile(os.path.join(labelfile_path, file_name))]
@@ -80,7 +80,7 @@ for image in image_train:
     os.rename(src,dst)
 for image in image_test:
     src = os.path.join(imagefile_path,image)
-    dst = os.path.join(imagefile_path, "val")
+    dst = os.path.join(imagefile_path, "test")
     dst = os.path.join(dst,image)
     os.rename(src,dst)
 for label in label_train:
@@ -90,6 +90,21 @@ for label in label_train:
     os.rename(src,dst)
 for label in label_test:
     src = os.path.join(labelfile_path, label)
+    dst = os.path.join(labelfile_path, "test")
+    dst = os.path.join(dst,label)
+    os.rename(src,dst)
+image_file_names = [file_name for file_name in os.listdir(os.path.join(imagefile_path,"train")) if os.path.isfile(os.path.join(imagefile_path,"train", file_name))]
+label_file_names= [file_name for file_name in os.listdir(os.path.join(labelfile_path,"train")) if os.path.isfile(os.path.join(labelfile_path,"train", file_name))]
+image_train, image_val, label_train, label_val = train_test_split(image_file_names, label_file_names, test_size=0.25, random_state=121)
+
+for image in image_val:
+    src = os.path.join(imagefile_path,"train",image)
+    dst = os.path.join(imagefile_path, "val")
+    dst = os.path.join(dst,image)
+    os.rename(src,dst)
+for label in label_val:
+    src = os.path.join(labelfile_path, "train", label)
     dst = os.path.join(labelfile_path, "val")
     dst = os.path.join(dst,label)
     os.rename(src,dst)
+"""
