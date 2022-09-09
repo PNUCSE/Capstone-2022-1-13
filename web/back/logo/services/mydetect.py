@@ -23,12 +23,12 @@ class MyDetectLogo:
         self.imgsz = imgSz
         self.logo = logo
 
-        # self.weight = torch.load(os.path.join(self.base_dir, 'logo/services/best.pt'))
-        # self.device = select_device('')
-        # self.model = DetectMultiBackend(self.weight, device=self.device)
-
-        self.model = torch.hub.load('ultralytics/yolov5', 'custom', os.path.join(self.base_dir, 'logo/services/best.pt'))
+        self.weight = os.path.join(self.base_dir, 'logo/services/best.pt')
         self.device = select_device('')
+        self.model = DetectMultiBackend(self.weight, device=self.device)
+
+        # self.model = torch.hub.load('ultralytics/yolov5', 'custom', os.path.join(self.base_dir, 'logo/services/best.pt'))
+        # self.device = select_device('')
 
     def find_logo(self):
         source = self.logo.video.path
@@ -53,16 +53,25 @@ class MyDetectLogo:
         seen_result = []
         for path, im, im0s, vid_cap, s in datasets:
             im = torch.from_numpy(im).to(self.device)
-            im = im.half() if self.model.fp16 else im.float()
+            im = im.float()
             im /= 255
             if len(im.shape) == 3:
                 im = im[None]
 
-            pred = self.model(im)
+            pred = self.model(im, augment=False, visualize=False)
+
+            conf_thres = 0.25
+            iou_thres=0.45
+            classes=None
+            agnostic_nms=False
+            # pred = non_max_suppression(pred, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic_nms=False, max_det=1000)
+            pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=1000)
+
             pred = classifier.calculate_similarity(pred, im, im0s, thres=0.99)
 
             logoSeen = 0
             for i, det in enumerate(pred): # per image
+                seen += 1
                 logoSeen = len(det)
                 p, im0, frame = path, im0s.copy(), getattr(datasets, 'frame', 0)
 

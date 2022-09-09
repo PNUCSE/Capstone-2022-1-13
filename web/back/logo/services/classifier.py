@@ -14,12 +14,14 @@ class SecondClassifier:
     def __init__(self, logo, device):
         # logo image RGB, float32 3*w*h
         self.device = device
-        
+        self.to_tensor = transforms.ToTensor()
+
         logo = cv2.resize(logo, (224, 224))
         # logo = logo[:, :, ::-1].transpose(2, 0, 1)
         logo = logo[:, :, ::-1]
         self.logim = logo
-        self.logo = torch.from_numpy(np.ascontiguousarray(logo, dtype=np.float32)).to(self.device)
+        self.logo = torch.from_numpy(np.ascontiguousarray(logo.transpose(2, 0, 1), dtype=np.float32)).to(self.device)
+        # self.logo = np.ascontiguousarray(logo, dtype=np.float32)
         
         # need weights
         self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
@@ -28,7 +30,7 @@ class SecondClassifier:
         
         self.scaler = transforms.Resize(size=(224,224))
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        # self.to_tensor = transforms.ToTensor()
+        
 
         self.logo_vec = self.get_vector(self.logo).reshape(512)
         self.cos = nn.CosineSimilarity(dim=0, eps=1e-6)
@@ -143,7 +145,7 @@ class SecondClassifier:
                     ###
 
                     # uint8 to float32
-                    im = torch.from_numpy(np.ascontiguousarray(im, dtype=np.float32)).to(self.device)  
+                    im = torch.from_numpy(np.ascontiguousarray(im.transpose(2, 0, 1), dtype=np.float32)).to(self.device)  
                     im_vec = self.get_vector(im).reshape(512)
 
                     # size of vector tensor's size : [512]
@@ -167,3 +169,6 @@ class SecondClassifier:
             new_x.append(d)
 
         return new_x
+
+    def get_stat(self):
+        return self.stat
