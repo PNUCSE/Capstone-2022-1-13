@@ -37,17 +37,12 @@ class DetectLogo:
 
         logo_img = self.logo.image.path
         logo_img = cv2.imread(logo_img, cv2.IMREAD_COLOR)
-        # logo_img = cv2.cvtColor(logo_img, cv2.COLOR_BGR2RGB)
         classifier = SecondClassifier(logo_img)
 
-        # save_dir = increment_path(Path(os.path.join(self.base_dir, 'logo/result')) / 'exp', exist_ok=False)  # increment run
-        # save_dir.mkdir(parents=True, exist_ok=True)  # make dir
-        # save_dir = os.path.join(self.base_dir, 'results')
         save_dir = Path(os.path.join(self.base_dir, 'files/results'))
         save_dir.mkdir(parents=True, exist_ok=True)
 
         device = select_device('')
-        # data = self.base_dir + '/yolov5/data/coco128.yaml' # 뒤에 바꿔야됨
         data = os.path.join(self.base_dir, 'yolov5/data/coco128.yaml')
         model = DetectMultiBackend(weights, device=device, dnn=False, data=data, fp16=False)
         stride, names, pt = model.stride, model.names, model.pt

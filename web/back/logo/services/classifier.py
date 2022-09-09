@@ -11,14 +11,16 @@ import torchvision.transforms as transforms
 from torch.autograd import Variable
 
 class SecondClassifier:
-    def __init__(self, logo):
+    def __init__(self, logo, device):
         # logo image RGB, float32 3*w*h
+        self.device = device
+        
         logo = cv2.resize(logo, (224, 224))
         # logo = logo[:, :, ::-1].transpose(2, 0, 1)
         logo = logo[:, :, ::-1]
         self.logim = logo
-        self.logo = np.ascontiguousarray(logo, dtype=np.float32)
-
+        self.logo = torch.from_numpy(np.ascontiguousarray(logo, dtype=np.float32)).to(self.device)
+        
         # need weights
         self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1)
         self.layer = self.model._modules.get('avgpool')
@@ -26,12 +28,10 @@ class SecondClassifier:
         
         self.scaler = transforms.Resize(size=(224,224))
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-        self.to_tensor = transforms.ToTensor()
+        # self.to_tensor = transforms.ToTensor()
 
         self.logo_vec = self.get_vector(self.logo).reshape(512)
         self.cos = nn.CosineSimilarity(dim=0, eps=1e-6)
-        # self.euclid = nn.PairwiseDistance(p=2)
-
         self.stat = defaultdict(int)
 
     def xyxy2xywh(self, x):
@@ -81,7 +81,7 @@ class SecondClassifier:
 
     def get_vector(self, img):
         # 2. Create a PyTorch Variable with the transformed image
-        t_img = Variable(self.normalize(self.to_tensor(img)).unsqueeze(0))
+        t_img = Variable(self.normalize(img).unsqueeze(0))
 
         # 3. Create a vector of zeros that will hold our feature vector
         #    The 'avgpool' layer has an output size of 512
@@ -142,15 +142,13 @@ class SecondClassifier:
                     # cv2.destroyAllWindows()
                     ###
 
-                    im = np.ascontiguousarray(im, dtype=np.float32)  # uint8 to float32
+                    # uint8 to float32
+                    im = torch.from_numpy(np.ascontiguousarray(im, dtype=np.float32)).to(self.device)  
                     im_vec = self.get_vector(im).reshape(512)
 
                     # size of vector tensor's size : [512]
                     # cosine similiarity
                     sim = self.cos(self.logo_vec, im_vec) 
-
-                    # euclid distance
-                    # sim = self.euclid(self.logo_vec, im_vec) 
 
                     # print("sim", sim)
                     str_sim = str(sim)
@@ -161,8 +159,11 @@ class SecondClassifier:
                         after -= 1
                     # d[a_i, 4] = sim
 
-                d = np.delete(d, sims, 0)
+                np_d = d.numpy()
+                np_d = np.delete(np_d, sims, 0)
+                # torch.from_numpy(np.ascontiguousarray(im, dtype=np.float32)).to(self.device) 
+                d = torch.from_numpy(np_d).to(self.device) 
 
             new_x.append(d)
 
-        return new_x, self.stat
+        return new_x

@@ -12,7 +12,8 @@ from .models import Logo
 
 # import sys
 # sys.path.append("/usr/local/bin/logoFinder/web/back/yolov5")
-from logo.services.detect import DetectLogo
+# from logo.services.detect import DetectLogo
+from logo.services.mydetect import MyDetectLogo
 
 # logo/
 @api_view(['POST'])
@@ -27,7 +28,7 @@ def logo(request):
     if logoSerializer.is_valid():
         logo = logoSerializer.save()
         
-        detectLogo = DetectLogo(imgSz=(640, 640), conf=0.25, logo=logo)
+        detectLogo = MyDetectLogo(imgSz=(640, 640), conf=0.25, logo=logo)
         sample_data = detectLogo.find_logo()
 
         # print(sample_data)
