@@ -2,6 +2,7 @@ from collections import defaultdict
 import numpy as np
 import torch
 import cv2
+import time
 
 from torch import cdist
 import torch.nn as nn
@@ -129,10 +130,12 @@ class SecondClassifier:
                 # uint8 to float32
                 sims = []
                 for a_i, a in enumerate(new_d): # per detect
+                    time1 = time.time()
                     cutout = im0[i][int(a[1]):int(a[3]), int(a[0]):int(a[2])]
 
                     im = cv2.resize(cutout, (224, 224))
                     im = im[:, :, ::-1]
+                    time2 = time.time()
                     
                     ### For Debugging
                     # cv2.imshow('logo', self.logim)
@@ -147,10 +150,12 @@ class SecondClassifier:
                     # uint8 to float32
                     im = torch.from_numpy(np.ascontiguousarray(im.transpose(2, 0, 1), dtype=np.float32)).to(self.device)  
                     im_vec = self.get_vector(im).reshape(512)
+                    time3 = time.time()
 
                     # size of vector tensor's size : [512]
                     # cosine similiarity
-                    sim = self.cos(self.logo_vec, im_vec) 
+                    sim = self.cos(self.logo_vec, im_vec)
+                    time4 = time.time() 
 
                     # print("sim", sim)
                     str_sim = str(sim)
@@ -160,6 +165,12 @@ class SecondClassifier:
                         sims.append(a_i)
                         after -= 1
                     # d[a_i, 4] = sim
+                    time5 = time.time()
+
+                    print("time 1", time2 - time1)
+                    print("time 2", time3 - time2)
+                    print("time 3", time4 - time3)
+                    print("time 4", time5 - time4)
 
                 np_d = d.numpy()
                 np_d = np.delete(np_d, sims, 0)
