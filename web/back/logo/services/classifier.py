@@ -164,7 +164,6 @@ class SecondClassifier:
                     if thres > sim:
                         sims.append(a_i)
                         after -= 1
-                    # d[a_i, 4] = sim
                     # time5 = time.time()
 
                     # print("time 1", time2 - time1)

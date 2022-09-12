@@ -80,6 +80,25 @@ class MyDetectLogo:
 
                 # Labeling
                 annotator = Annotator(im0, line_width=3, example=str(names))
+                if len(det):
+                    det[:, :4] = scale_coords(im.shape[2:], det[:, :4], im0.shape).round()
+
+                    for *xyxy, conf, cls in reversed(det):
+                        if True:
+                            c = int(cls)  # integer class
+                            label = None if False else (names[c] if False else f'{names[c]} {conf:.2f}')
+                            annotator.box_label(xyxy, label, color=colors(c, True))
+
+                    if isinstance(save_path, cv2.VideoWriter):
+                        save_path.release()  # release previous video writer
+                    if vid_cap:  # video
+                        fps = vid_cap.get(cv2.CAP_PROP_FPS)
+                        w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+                        h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+                    save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
+                    save_path = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                    save_path.write(im0)
 
             nowTime = nowTime + datetime.timedelta(milliseconds=33)
             if logoSeen != 0:
@@ -137,4 +156,5 @@ class MyDetectLogo:
         logoResult.result.name = os.path.join(save_dir, os.path.basename(source))
         logoResult.save()
 
+        # os.system(f"ffmpeg -i {os.path.join(save_dir, os.path.basename(source))} -vcodec libx264 {os.path.join(save_dir, 'result.mp4')}")
         return mani_seen_result
