@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = 'http://127.0.0.1:8000'
+const baseUrl = 'http://164.125.252.182:8011'
 
 const headers = {
     'Accept': 'application/json',
