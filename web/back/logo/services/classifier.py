@@ -7,7 +7,7 @@ import time
 from torch import cdist
 import torch.nn as nn
 import torchvision.models as models
-from torchvision.models import ResNet18_Weights
+from torchvision.models import ResNet18_Weights, VGG11_BN_Weights
 import torchvision.transforms as transforms
 from torch.autograd import Variable
 
@@ -31,7 +31,7 @@ class SecondClassifier:
         # self.model.eval()
 
         # vgg-11
-        self.model = models.vgg11_bn(pretrained=True)
+        self.model = models.vgg11_bn(weights=VGG11_BN_Weights.IMAGENET1K_V1).to(self.device)
         self.layer = self.model.classifier[-2]
         self.model.eval()
         
