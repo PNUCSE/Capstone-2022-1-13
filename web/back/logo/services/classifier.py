@@ -25,15 +25,21 @@ class SecondClassifier:
         # self.logo = np.ascontiguousarray(logo, dtype=np.float32)
         
         # need weights
-        self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1).to(self.device)
-        self.layer = self.model._modules.get('avgpool')
+        # resnet 18
+        # self.model = models.resnet18(weights=ResNet18_Weights.IMAGENET1K_V1).to(self.device)
+        # self.layer = self.model._modules.get('avgpool')
+        # self.model.eval()
+
+        # vgg-11
+        self.model = models.vgg11_bn(pretrained=True)
+        self.layer = self.model.classifier[-2]
         self.model.eval()
         
         self.scaler = transforms.Resize(size=(224,224))
         self.normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
         
-
-        self.logo_vec = self.get_vector(self.logo).reshape(512)
+        # self.logo_vec = self.get_vector(self.logo).reshape(512)
+        self.logo_vec = self.get_vector(self.logo).reshape(4096)
         self.cos = nn.CosineSimilarity(dim=0, eps=1e-6)
         self.stat = defaultdict(int)
 
@@ -88,7 +94,11 @@ class SecondClassifier:
 
         # 3. Create a vector of zeros that will hold our feature vector
         #    The 'avgpool' layer has an output size of 512
-        my_embedding = torch.zeros(1, 512, 1, 1)
+        # resnet 18
+        # my_embedding = torch.zeros(1, 512, 1, 1)
+
+        # vgg
+        my_embedding = torch.zeros(1, 4096)
 
         # 4. Define a function that will copy the output of a layer
         def copy_data(m, i, o):
@@ -149,7 +159,8 @@ class SecondClassifier:
 
                     # uint8 to float32
                     im = torch.from_numpy(np.ascontiguousarray(im.transpose(2, 0, 1), dtype=np.float32)).to(self.device)  
-                    im_vec = self.get_vector(im).reshape(512)
+                    # im_vec = self.get_vector(im).reshape(512)
+                    im_vec = self.get_vector(im).reshape(4096)
                     # time3 = time.time()
 
                     # size of vector tensor's size : [512]
