@@ -157,7 +157,7 @@ class MyDetectLogo:
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
 
         logoResult.result.name = os.path.join('results', os.path.basename(source))
-        logoResult.stamp = json.dumps(mani_seen_result, ensure_ascii=False)
+        logoResult.stamp = json.dumps(mani_seen_result, indent=4, sort_keys=True, default=str)
         logoResult.save()
 
         # os.system(f"ffmpeg -i {os.path.join(save_dir, os.path.basename(source))} -vcodec libx264 {os.path.join(save_dir, 'result.mp4')}")
