@@ -11,6 +11,8 @@ class Logo(models.Model) :
 class LogoResult(models.Model):
     logo = models.ForeignKey(Logo, on_delete=models.CASCADE)
     result = models.FileField(upload_to = 'results/', null = True)
+    stamp = models.TextField()
+    thres = models.FloatField()
 
     def __str__(self):
         return "{0}".format(self.logo)

@@ -15,7 +15,6 @@ const postSubmit = async(video, logo) => {
         headers: headers
     })
     .then(response => {
-        console.log(response)
         return response.data
     })
 }

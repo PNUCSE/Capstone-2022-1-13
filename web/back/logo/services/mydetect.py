@@ -3,6 +3,7 @@ import os
 import torch
 import cv2
 import datetime
+import json
 from pathlib import Path
 
 from django.conf import settings
@@ -17,7 +18,7 @@ from yolov5.utils.plots import Annotator, colors, save_one_box
 from yolov5.models.common import DetectMultiBackend
 
 class MyDetectLogo:
-    def __init__(self, imgSz, conf, logo):
+    def __init__(self, imgSz, conf, logo, thres):
         # self.weights = os.path.join(self.base_dir, 'logo/services/best.pt')
         self.base_dir = getattr(settings, 'BASE_DIR', '/')
         self.imgsz = imgSz
@@ -26,6 +27,7 @@ class MyDetectLogo:
         self.weight = os.path.join(self.base_dir, 'logo/services/best.pt')
         self.device = select_device('')
         self.model = DetectMultiBackend(self.weight, device=self.device)
+        self.thres = thres
 
         # self.model = torch.hub.load('ultralytics/yolov5', 'custom', os.path.join(self.base_dir, 'logo/services/best.pt'))
         # self.device = select_device('')
@@ -34,6 +36,7 @@ class MyDetectLogo:
         source = self.logo.video.path
 
         logoResult = LogoResult(logo = self.logo)
+        logoResult.thres = self.thres
         logoResult.save()
 
         logo_img = self.logo.image.path
@@ -67,7 +70,7 @@ class MyDetectLogo:
             # pred = non_max_suppression(pred, conf_thres=0.25, iou_thres=0.45, classes=None, agnostic_nms=False, max_det=1000)
             pred = non_max_suppression(pred, conf_thres, iou_thres, classes, agnostic_nms, max_det=1000)
 
-            pred = classifier.calculate_similarity(pred, im, im0s, thres=0.99)
+            pred = classifier.calculate_similarity(pred, im, im0s, thres=self.thres)
 
             logoSeen = 0
             for i, det in enumerate(pred): # per image
@@ -153,8 +156,9 @@ class MyDetectLogo:
         s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if False else ''
         LOGGER.info(f"Results saved to {colorstr('bold', save_dir)}{s}")
 
-        logoResult.result.name = os.path.join(save_dir, os.path.basename(source))
+        logoResult.result.name = os.path.join('results', os.path.basename(source))
+        logoResult.stamp = json.dumps(mani_seen_result, ensure_ascii=False)
         logoResult.save()
 
         # os.system(f"ffmpeg -i {os.path.join(save_dir, os.path.basename(source))} -vcodec libx264 {os.path.join(save_dir, 'result.mp4')}")
-        return mani_seen_result
+        return logoResult
