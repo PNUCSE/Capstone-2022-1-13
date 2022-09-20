@@ -1,5 +1,6 @@
 # Create your views here.
 
+from xmlrpc.client import ResponseError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
@@ -25,7 +26,10 @@ def logo(request):
         'image': request.data['image'],
         'video': request.data['video']
     }
-    thres = request.data['thres'] if 'thres' in request.data else 0.95
+    thres = float(request.data['thres']) if 'thres' in request.data else 0.95
+    if thres < 0 or thres > 1:
+        content = {"detail": "thres value is invalid"}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     logoSerializer = LogoSerializer(data=newImage)
     if logoSerializer.is_valid():

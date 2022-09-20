@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Button, Spin } from 'antd';
+import { Spin, Input } from 'antd';
+const { Search } = Input;
 import { useDispatch, useSelector } from 'react-redux';
 import { submit } from '@/slices/FormSlice'
 
@@ -16,9 +17,9 @@ const SubmitButton = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const onSubmit = async () => {
+    const onSubmit = async (value) => {
         
-        dispatch(submit({video, logoImage}))
+        dispatch(submit({video, logoImage, value}))
             .unwrap()
             .then(() => {
                 navigate('/result');
@@ -28,7 +29,12 @@ const SubmitButton = () => {
 
     return(
         <div className={cx('ButtonContainer')}>
-            <Button type="primary" size={"large"} onClick={onSubmit}>Submit</Button>
+            <Search
+                placeholder="Input Threshold value"
+                enterButton="Submit"
+                size="large"
+                onSearch={onSubmit}
+            />
             {
                 isSubmitFinish ? 
                     <></> : 

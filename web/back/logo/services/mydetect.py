@@ -28,6 +28,7 @@ class MyDetectLogo:
         self.device = select_device('')
         self.model = DetectMultiBackend(self.weight, device=self.device)
         self.thres = thres
+        LOGGER.info(f"Thres value is {self.thres}")
 
         # self.model = torch.hub.load('ultralytics/yolov5', 'custom', os.path.join(self.base_dir, 'logo/services/best.pt'))
         # self.device = select_device('')

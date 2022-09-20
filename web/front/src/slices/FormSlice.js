@@ -3,9 +3,9 @@ import formAPI from "@/lib/formAPI"
 
 export const submit = createAsyncThunk(
     "forms/submit",
-    async( {video, logoImage}, thunkAPI) => {
+    async( {video, logoImage, value}, thunkAPI) => {
         try {
-            const data = await formAPI.postSubmit(video, logoImage);
+            const data = await formAPI.postSubmit(video, logoImage, value);
             console.log(data)
             thunkAPI.dispatch(resultAdd({result: data}))
             return data
