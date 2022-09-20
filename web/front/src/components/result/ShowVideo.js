@@ -14,8 +14,11 @@ const ShowVideo = () => {
     let videoRef = useRef(null);
 
     useEffect(() => {
+        var date = new Date("1970-01-01 " + time);
+        const seconds = Math.floor(date.getTime() / 1000);
+
         const videoDOM = videoRef.current;
-        videoDOM.currentTime = time;
+        videoDOM.currentTime = seconds+32400;
     }, [changeToggle])
     
     return (

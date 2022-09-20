@@ -6,7 +6,8 @@ export const submit = createAsyncThunk(
     async( {video, logoImage}, thunkAPI) => {
         try {
             const data = await formAPI.postSubmit(video, logoImage);
-            thunkAPI.dispatch(resultAdd({result: data}))
+            console.log(data)
+            thunkAPI.dispatch(resultAdd({result: data.stamp}))
             return data
         } catch (error) {
             console.error(error);
@@ -15,7 +16,7 @@ export const submit = createAsyncThunk(
     }
 )
 
-const initialState = { video: null, logoImage: null, isSubmitFinish: true, error: null, result: null }
+const initialState = { video: null, logoImage: null, isSubmitFinish: true, error: null, result: null, resultId: null }
 
 const formSlice = createSlice({
     name: 'forms',
@@ -28,7 +29,8 @@ const formSlice = createSlice({
             state.logoImage = action.payload.logoImage
         },
         resultAdd: (state, action) => {
-            state.result = action.payload.result
+            state.result = action.payload.result;
+            // state.resultId = action.payoad.resultId;
         }
     },
     extraReducers: {

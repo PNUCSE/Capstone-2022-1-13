@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 
 const initialState = { 
-    time: null,
+    time: '00:00:00',
     changeToggle: true
 }
 

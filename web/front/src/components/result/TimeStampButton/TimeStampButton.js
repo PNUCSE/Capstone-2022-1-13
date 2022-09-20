@@ -17,9 +17,8 @@ const TimeStampButton = ({item}) => {
     }
 
     const getStringTime = (time) => {
-        var date = new Date(0);
-        date.setSeconds(time); // specify value for SECONDS here
-        var timeString = date.toISOString().substring(11, 19);
+        var timeString = time.substring(0, 7)
+
         return timeString;
     }
 
