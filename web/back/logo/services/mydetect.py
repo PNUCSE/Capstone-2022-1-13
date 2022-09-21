@@ -49,7 +49,10 @@ class MyDetectLogo:
 
         stride, names, pt = self.model.stride, self.model.names, self.model.pt
         imgsz = check_img_size(self.imgsz, s=stride)
+
         datasets = LoadImages(source, img_size=imgsz, stride=stride, auto=pt)
+        bs = 1  # batch_size
+        vid_path, vid_writer = [None] * bs, [None] * bs
 
         seen, dt = 0, [0.0, 0.0, 0.0]
         preSeen = 0
@@ -93,16 +96,18 @@ class MyDetectLogo:
                             label = None if False else (names[c] if False else f'{names[c]} {conf:.2f}')
                             annotator.box_label(xyxy, label, color=colors(c, True))
 
-                    if isinstance(save_path, cv2.VideoWriter):
-                        save_path.release()  # release previous video writer
+                if vid_path[i] != save_path:
+                    vid_path[i] = save_path
+                    if isinstance(vid_writer[i], cv2.VideoWriter):
+                        vid_writer[i].release()  # release previous video writer
                     if vid_cap:  # video
                         fps = vid_cap.get(cv2.CAP_PROP_FPS)
                         w = int(vid_cap.get(cv2.CAP_PROP_FRAME_WIDTH))
                         h = int(vid_cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
                     save_path = str(Path(save_path).with_suffix('.mp4'))  # force *.mp4 suffix on results videos
-                    save_path = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
-                    save_path.write(im0)
+                    vid_writer[i] = cv2.VideoWriter(save_path, cv2.VideoWriter_fourcc(*'mp4v'), fps, (w, h))
+                vid_writer[i].write(im0)
 
             nowTime = nowTime + datetime.timedelta(milliseconds=33)
             if logoSeen != 0:

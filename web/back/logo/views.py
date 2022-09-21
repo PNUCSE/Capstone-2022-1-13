@@ -7,9 +7,10 @@ from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
 
 from .serializers import LogoSerializer
-from .models import Logo
+from .models import Logo, LogoResult
 
 import json
 
@@ -56,3 +57,13 @@ def logo_id(request, pk):
     
     serializer = LogoSerializer(match_logo)
     return Response(serializer.data)
+
+# logo/download/<int:pk>/
+@api_view(['GET'])
+def download_result(request, pk):
+    obj = LogoResult.objects.get(id=pk)
+    filename = obj.result.name.split('/')[-1]
+    response = HttpResponse(obj.result, content_type='text/plain')
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+    return response
