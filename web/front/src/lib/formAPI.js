@@ -21,8 +21,17 @@ const postSubmit = async(video, logo, value) => {
     })
 }
 
+const downloadVideo = (resultId) => {
+    const link = document.createElement('a');
+    link.href = `${baseUrl}/logo/download/${resultId}`
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
 const formAPI = {
-    postSubmit
+    postSubmit,
+    downloadVideo
 };
 
 export default formAPI;

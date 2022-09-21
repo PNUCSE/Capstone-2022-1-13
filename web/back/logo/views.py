@@ -8,11 +8,13 @@ from rest_framework.parsers import MultiPartParser
 
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
+from django.conf import settings
 
 from .serializers import LogoSerializer
 from .models import Logo, LogoResult
 
 import json
+import os
 
 # import sys
 # sys.path.append("/usr/local/bin/logoFinder/web/back/yolov5")
@@ -63,7 +65,8 @@ def logo_id(request, pk):
 def download_result(request, pk):
     obj = LogoResult.objects.get(id=pk)
     filename = obj.result.name.split('/')[-1]
-    response = HttpResponse(obj.result, content_type='text/plain')
-    response['Content-Disposition'] = 'attachment; filename=%s' % filename
+    with open(os.path.join(settings.MEDIA_ROOT, obj.result.name), 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='video/mp4')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
 
     return response
