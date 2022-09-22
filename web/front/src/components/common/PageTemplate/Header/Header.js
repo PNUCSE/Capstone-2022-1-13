@@ -2,15 +2,18 @@ import React from 'react';
 import styles from './Header.module.scss';
 import classNames from 'classnames/bind';
 
+import { Link } from 'react-router-dom';
+
 const cx = classNames.bind(styles);
 
-const Header = () => {
+const Header = ({route}) => {
     return (
         <header className={cx('Header')}>
             <div className={cx('Header-Content')}>
-                <div className={cx('breadcomb')}>
-                    LogoFinder
-                </div>
+                <Link to={"/"}>LogoFinder</Link>
+                { route &&  
+                    <Link to={"."}> / {route}</Link>
+                }
             </div>
         </header>
     )

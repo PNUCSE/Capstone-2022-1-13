@@ -4,13 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import { logoAdd } from '@/slices/FormSlice';
 
 import { useDropzone } from 'react-dropzone'
-import { Typography, Form } from 'antd';
-import { PlusOutlined } from '@ant-design/icons'
-const { Title } = Typography;
+import classNames from 'classnames/bind';
+import styles from './LogoForm.module.scss'
 
 const LogoForm = () => {
-    const { logoImage } = useSelector((state) => state.forms);
-
+    const cx = classNames.bind(styles);
     const dispatch = useDispatch();
     const onVideoDrop = ( files ) => {
         dispatch(logoAdd({logoImage: files[0]}))
@@ -26,42 +24,22 @@ const LogoForm = () => {
         maxSize: 800000000,
     });
 
-    const acceptedFileItems = acceptedFiles.map(file => (
-        <li key={file.path}>
-            {file.path} - {file.size} bytes
-        </li>
-    ));
-
-    const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-        <li key={file.path}>
-            {file.path} - {file.size} bytes
-            <ul>
-                {errors.map(e => (
-                    <li key={e.code}>{e.message}</li>
-                ))}
-            </ul>
-        </li>
-    ));
-
     return(        
         <div>
-            <Form>
-                <Title>Upload your Logo</Title>
-                <div style={{ width: '200px', height: '200px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                    {...getRootProps({ className: 'dropzone' })}
+            <div className={cx('FormContainer')}>
+                <div className={cx('Title')}>Upload Logo Image you want to detect</div>
+                <div className={cx('DropZoneImage')}
+                    style={
+                        !!acceptedFiles[0] ?
+                        {backgroundImage: `url(${URL.createObjectURL(acceptedFiles[0])})`, opacity: 0.5} :
+                        {backgroundImage: null}
+                    }
+                    {...getRootProps()}
                 >
                     <input {...getInputProps()} />
-                    <PlusOutlined style={{ fontSize: '3rem' }} />
-                    {/* <p>Drag 'n' drop some files here, or click to select files</p>
-                    <em>(Only *.png and *.jpg images will be accepted)</em> */}
+                    <img src={process.env.PUBLIC_URL + '/img/Add_Plus.svg'}/>
                 </div>
-                <aside>
-                    <h4>Accepted files</h4>
-                    <ul>{acceptedFileItems}</ul>
-                    <h4>Rejected files</h4>
-                    <ul>{fileRejectionItems}</ul>
-                </aside>
-            </Form>
+            </div>
         </div>
     )
 };

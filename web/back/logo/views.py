@@ -1,14 +1,25 @@
 # Create your views here.
 
+from xmlrpc.client import ResponseError
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.parsers import MultiPartParser
 
 from django.shortcuts import get_object_or_404
+from django.http import HttpResponse
+from django.conf import settings
 
 from .serializers import LogoSerializer
-from .models import Logo
+from .models import Logo, LogoResult
+
+import json
+import os
+
+# import sys
+# sys.path.append("/usr/local/bin/logoFinder/web/back/yolov5")
+# from logo.services.detect import DetectLogo
+from logo.services.mydetect import MyDetectLogo
 
 # logo/
 @api_view(['POST'])
@@ -16,13 +27,27 @@ from .models import Logo
 def logo(request):
     newImage = {
         'image': request.data['image'],
+        'video': request.data['video']
     }
+    thres = float(request.data['thres']) if 'thres' in request.data else 0.95
+    if thres < 0 or thres > 1:
+        content = {"detail": "thres value is invalid"}
+        return Response(content, status=status.HTTP_400_BAD_REQUEST)
 
     logoSerializer = LogoSerializer(data=newImage)
     if logoSerializer.is_valid():
-        logoSerializer.save()
-        print(logoSerializer.data)
-        return Response(logoSerializer.data)
+        logo = logoSerializer.save()
+        
+        detectLogo = MyDetectLogo(imgSz=(640, 640), conf=0.25, logo=logo, thres=thres)
+        logoResult = detectLogo.find_logo()
+
+        # print(sample_data)
+        rtn_data = {
+            "id": logoResult.id,
+            "stamp": json.loads(logoResult.stamp)
+        }
+
+        return Response(rtn_data)
     else:
         print("not valid")
         return Response(logoSerializer.errors)
@@ -34,3 +59,14 @@ def logo_id(request, pk):
     
     serializer = LogoSerializer(match_logo)
     return Response(serializer.data)
+
+# logo/download/<int:pk>/
+@api_view(['GET'])
+def download_result(request, pk):
+    obj = LogoResult.objects.get(id=pk)
+    filename = obj.result.name.split('/')[-1]
+    with open(os.path.join(settings.MEDIA_ROOT, obj.result.name), 'rb') as fh:
+        response = HttpResponse(fh.read(), content_type='video/mp4')
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+
+    return response

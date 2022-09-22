@@ -4,11 +4,14 @@ import { useDispatch } from 'react-redux';
 import { videoAdd } from '@/slices/FormSlice';
 
 import { useDropzone } from 'react-dropzone'
-import { Typography, Form } from 'antd';
-import { PlusOutlined } from '@ant-design/icons'
-const { Title } = Typography;
+import classNames from 'classnames/bind';
+import styles from './VideoForm.module.scss'
+
+import FFMPEG from "react-ffmpeg";
+
 
 const VideoForm = () => {
+    const cx = classNames.bind(styles);
     const dispatch = useDispatch();
     const onVideoDrop = ( files ) => {
         dispatch(videoAdd({video: files[0]}))
@@ -41,24 +44,18 @@ const VideoForm = () => {
     ));
 
     return(        
-        <div>
-            <Form>
-                <Title>Upload your Video</Title>
-                <div style={{ width: '200px', height: '200px', border: '1px solid lightgray', display: 'flex', alignItems: 'center', justifyContent: 'center' }}
-                    {...getRootProps({ className: 'dropzone' })}
-                >
-                    <input {...getInputProps()} />
-                    <PlusOutlined style={{ fontSize: '3rem' }} />
-                    {/* <p>Drag 'n' drop some files here, or click to select files</p>
-                    <em>(Only *.mp4 images will be accepted)</em> */}
-                </div>
-                <aside>
-                    <h4>Accepted files</h4>
-                    <ul>{acceptedFileItems}</ul>
-                    <h4>Rejected files</h4>
-                    <ul>{fileRejectionItems}</ul>
-                </aside>
-            </Form>
+        <div className={cx('FormContainer')}>
+            <div className={cx('Title')}>Upload your Video</div>
+            <div className={cx('DropZoneVideo')} {...getRootProps()} >
+                <input {...getInputProps()} />
+                <img src={process.env.PUBLIC_URL + '/img/Add_Plus.svg'}/>
+            </div>
+            <aside>
+                <h4>Accepted files</h4>
+                <ul>{acceptedFileItems}</ul>
+                <h4>Rejected files</h4>
+                <ul>{fileRejectionItems}</ul>
+            </aside>
         </div>
     )
 };

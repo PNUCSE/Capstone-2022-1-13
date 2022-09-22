@@ -5,9 +5,11 @@ import { VideoForm, LogoForm, SubmitButton } from '@/components/form';
 const Home = () => {
     return (
         <PageTemplate>
-            <VideoForm/>
-            <LogoForm/>
-            <SubmitButton/>
+            <div>
+                <VideoForm/>
+                <LogoForm/>
+                <SubmitButton/>
+            </div>
         </PageTemplate>
     )
 };

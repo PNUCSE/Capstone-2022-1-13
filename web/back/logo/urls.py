@@ -19,5 +19,6 @@ from . import views
 
 urlpatterns = [
     path('', views.logo),
-    path('<int:pk>/', views.logo_id)
+    path('<int:pk>/', views.logo_id),
+    path('download/<int:pk>/', views.download_result)
 ]

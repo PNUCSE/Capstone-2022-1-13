@@ -40,7 +40,7 @@ SECRET_KEY = get_secret("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['164.125.252.182', '10.125.35.22', 'localhost', '127.0.0.1']
 
 
 # Application definition
@@ -75,9 +75,21 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+from corsheaders.defaults import default_headers
+
 CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:3000",
-    "http://localhost:3000"
+    "http://127.0.0.1:8010",
+    "http://localhost:8010",
+    "http://10.125.35.22:8010",
+    "http://164.125.252.182:8010"
+]
+
+CORS_ALLOW_HEADERS = list(default_headers) + [
+    "responseType",
+]
+
+CORS_EXPOSE_HEADERS = [
+    "Content-Disposition",
 ]
 
 ROOT_URLCONF = 'mysite.urls'
@@ -149,6 +161,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'files')
+MEDIA_URL = '/media/'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
