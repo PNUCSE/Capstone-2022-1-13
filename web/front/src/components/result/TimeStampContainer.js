@@ -12,7 +12,7 @@ const TimeStampContainer = () => {
     return (
         <div className={cx('Container')}>
             <p>timestamp buttons</p>
-            { result.map((item, index) => {
+            { result && result.map((item, index) => {
                 return <TimeStampButton item={item} key={index}/>
             })}
         </div>
