@@ -1,7 +1,9 @@
 import axios from 'axios'
 
 // const baseUrl = 'http://164.125.252.182:8011'
-const baseUrl = 'http://127.0.0.1:8011'
+// const baseUrl = 'http://127.0.0.1:8011'
+
+const baseUrl = window.location.protocol + "//" + window.location.hostname + ":8011"
 
 const headers = {
     'Accept': 'application/json',
@@ -9,6 +11,7 @@ const headers = {
 };
 
 const postSubmit = async(video, logo, value) => {
+    console.log(baseUrl)
     return await axios.post(`${baseUrl}/logo/`, {
         image: logo,
         video: video,
