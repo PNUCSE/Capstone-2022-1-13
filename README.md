@@ -47,7 +47,7 @@
 
 구현된 웹 프레임워크를 이용해 사용자로부터 영상과 이미지를 입력받은 후 학습한 결과인 `Detection Model`로 전달한다.   
 
-`Detection Model`은 `2nd Classifier`로 구현한다. 첫 번째 Classifier은 객체의 위치를 찾는 작업인 `지역화 작업` 수행, 두 번째 Classifier는 객체의 종류를 구분하는 `분류` 수행한다.    
+`Detection Model`은 `2 Stage Classifier`로 구현한다. 1st Stage Classifier은 객체의 위치를 찾는 작업인 `지역화 작업` 수행, 2nd Stage Classifier는 객체의 종류를 구분하는 `분류` 수행한다.    
 
 결과를 TimeStamp로 전처리 이후 다시 웹 프레임워크로 전달한다. 이를 통해 사용자에게 결과를 출력한다.
 
