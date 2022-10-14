@@ -25,7 +25,7 @@
 
 ### 조원 유동운
 이메일 : 
-> baka3737baka@gmail.com   
+> dopia976@naver.com   
 
 역할 :    
 > 모델 학습 및 검증   
@@ -33,7 +33,7 @@
 
 ### 조원 강태환
 이메일 : 
-> baka3737baka@gmail.com    
+> thkang727@naver.com    
 
 역할 :    
 > 학습 데이터 생성 및 전처리   
@@ -80,3 +80,18 @@ nohup python manage.py runserver 0.0.0.0:8011 &
 # 백그라운드로 프로젝트 실행
 sudo docker compose up --build -d
 ```
+
+### 웹 프레임워크
+![main_page](https://user-images.githubusercontent.com/64539267/195752610-54c4ef06-a6b5-4320-97f4-3160cbf9addb.png)
+
+메인 페이지에서는 검출 작업을 수행할려는 `영상`과 검출 대상이 되는 `로고 이미지`, 그리고 detection 작업에서 구별 기준이 되는 `threshold value`를 입력 받는다.   
+
+전부 입력 후 `Submit 버튼`을 통해 서버로 입력한 데이터들을 전송한다.
+
+![result_page](https://user-images.githubusercontent.com/64539267/195752675-14087151-e119-479c-9cb5-5df813946deb.png)
+
+`Detection Model`로부터 도출된 결과를 `Timestamp`로 전처리해 Result 페이지에서 보여준다.
+
+왼쪽의 동영상은 입력한 동영상이며, 오른쪽의 버튼들은 각 로고가 검출된 `timestamp`이다. 각 timestamp 버튼을 누르면 그 시간 범위의 시작 시간으로 넘어갈 수 있다.
+
+영상 아래의 `download video 버튼`은 detection 결과를 labeling한 영상을 다운받을 수 있다.
