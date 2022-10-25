@@ -53,7 +53,7 @@
 
 ## 4. 소개 및 시연 영상
 
-`시연 영상 넣는 부분`   
+[![Video Label](https://img.youtube.com/vi/YQvJbZ1K0JE/0.jpg)](https://youtube.com/watch?v=YQvJbZ1K0JE)
 
 ## 5. 사용법
 
